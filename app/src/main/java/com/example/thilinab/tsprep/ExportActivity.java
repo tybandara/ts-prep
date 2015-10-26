@@ -1,11 +1,7 @@
 package com.example.thilinab.tsprep;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -13,17 +9,16 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.thilinab.tsprep.sqldb.FeedEntry;
-import com.example.thilinab.tsprep.sqldb.SqlDb;
 import com.example.thilinab.tsprep.sqldb.SqlUtility;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 public class ExportActivity extends AppCompatActivity  {
+
+    SqlUtility sqlUtility = new SqlUtility(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +27,9 @@ public class ExportActivity extends AppCompatActivity  {
         setView();
     }
 
+    /**
+     * set views of the second export activity
+     */
     private void setView() {
         Button expButton = (Button) findViewById(R.id.Update_Btn);
 
@@ -51,11 +49,10 @@ public class ExportActivity extends AppCompatActivity  {
             }
         });
 
-        // Populate filter spinner
+        // Populate filter spinner.
         String strList[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
                 "Sep", "Oct", "Nov", "Dec"};
         Spinner filterSpinner = (Spinner) findViewById(R.id.Month_FIlter);
-
         // Application of the Array to the Spinner
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, strList);
@@ -64,20 +61,26 @@ public class ExportActivity extends AppCompatActivity  {
         filterSpinner.setAdapter(spinnerArrayAdapter);
     }
 
+    /**
+     * test button to drop the sqlite db
+     */
     private void handleDelDbButton() {
-        SqlUtility sqlUtility = new SqlUtility(this);
         sqlUtility.dropTable();
     }
 
+    /**
+     * filter the set of records for the records of the given month and show on the text view.
+     */
     private void handleExpButton() {
-        SqlUtility sqlUtility = new SqlUtility(this);
-
+        // we are showing the filtered records on a text view.
         TextView largeText = (TextView) findViewById(R.id.Testing_Text);
+        // we want the text view to be scrollable
         largeText.setMovementMethod(new ScrollingMovementMethod());
-        //largeText.setText(sqlUtility.getWholeDb());
 
+        // check the month user has selected
         Spinner spinner=(Spinner) findViewById(R.id.Month_FIlter);
 
+        // convert the user selected month to an integer month value
         DateFormat df = new SimpleDateFormat("MMM");
         Calendar cal  = Calendar.getInstance();
         try {
@@ -86,6 +89,7 @@ public class ExportActivity extends AppCompatActivity  {
             e.printStackTrace();
         }
 
+        // query the sqlite db by the selected month
         largeText.setText(sqlUtility.filterByMonth(cal.get(Calendar.MONTH)));
 
     }

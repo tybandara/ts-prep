@@ -10,10 +10,10 @@ import android.provider.BaseColumns;
  */
 public class SqlDb extends SQLiteOpenHelper {
 
-
-
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
+
+    /* string to create the table. If columns are added or removed, it should reflect here */
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + FeedEntry.TABLE_NAME + " (" +
                     FeedEntry._ID + " INTEGER PRIMARY KEY," +

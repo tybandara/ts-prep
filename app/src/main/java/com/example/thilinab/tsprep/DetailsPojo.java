@@ -2,6 +2,8 @@ package com.example.thilinab.tsprep;
 
 /**
  * Created by thilinab on 10/25/2015.
+ * A simple POJO to contain common class details
+ * class date, subject, class, start time, endtime
  */
 public class DetailsPojo {
     public int getYear() {
