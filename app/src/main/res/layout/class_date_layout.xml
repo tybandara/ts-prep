@@ -1,0 +1,86 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#000000">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Class Date"
+        android:id="@+id/textView"
+        android:visibility="visible"
+        android:textSize="20dp"
+        android:layout_weight="1"
+        android:textColor="#888888"
+        android:typeface="monospace"
+        android:gravity="center" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="28"
+            android:id="@+id/date_tv"
+            android:textAlignment="center"
+            android:textColor="#fefefe"
+            android:textSize="50dp"
+            android:textStyle="bold"
+            android:typeface="monospace"
+            android:background="#009688"
+            android:layout_weight="1"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="OCT"
+            android:id="@+id/month_tv"
+            android:textAlignment="center"
+            android:textColor="#fefefe"
+            android:textSize="50dp"
+            android:textStyle="bold"
+            android:typeface="monospace"
+            android:background="#009688"
+            android:layout_weight="2"
+            android:gravity="center|center_horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="2015"
+        android:id="@+id/year_tv"
+        android:textAlignment="center"
+        android:textColor="#fefefe"
+        android:textSize="50dp"
+        android:textStyle="bold"
+        android:typeface="monospace"
+        android:background="#009688"
+        android:layout_weight="2"
+        android:gravity="center_vertical|center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/textView2"
+        android:visibility="invisible"
+        android:layout_weight="1" />
+
+</LinearLayout>

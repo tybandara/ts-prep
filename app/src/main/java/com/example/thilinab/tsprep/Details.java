@@ -1,11 +1,23 @@
 package com.example.thilinab.tsprep;
 
+import com.example.thilinab.tsprep.sqldb.SqlUtility;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Created by thilinab on 10/25/2015.
- * A simple POJO to contain common class details
- * class date, subject, class, start time, endtime
+ * Created by thilinab on 10/31/2015.
  */
-public class DetailsPojo {
+public class Details {
+    private static Details ourInstance = new Details();
+
+    public static Details getInstance() {
+        return ourInstance;
+    }
+
+    private Details() {
+    }
+
     public int getYear() {
         return Year;
     }
@@ -69,6 +81,42 @@ public class DetailsPojo {
     int FromMinute;
     int ToHour;
     int ToMinute;
+    String ClassName;
+    String Subject;
 
+    public String getClassName() {
+        return ClassName;
+    }
 
+    public void setClassName(String className) {
+        ClassName = className;
+    }
+
+    public String getSubject() {
+        return Subject;
+    }
+
+    public void setSubject(String subject) {
+        Subject = subject;
+    }
+
+    SqlUtility sqlUtility;
+
+    public SqlUtility getSqlUtility() {
+        return sqlUtility;
+    }
+
+    public void setSqlUtility(SqlUtility sqlUtility) {
+        this.sqlUtility = sqlUtility;
+    }
+
+    public String getFilterMonth() {
+        return FilterMonth;
+    }
+
+    public void setFilterMonth(String filterMonth) {
+        FilterMonth = filterMonth;
+    }
+
+    String FilterMonth;
 }

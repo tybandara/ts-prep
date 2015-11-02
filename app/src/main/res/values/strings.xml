@@ -3,4 +3,7 @@
     <string name="Filter">Export_Btn_Text</string>
     <string name="Export_Text">Filter</string>
     <string name="Save_Str">Save</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

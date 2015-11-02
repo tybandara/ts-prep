@@ -129,7 +129,8 @@ public class SqlUtility {
                 null                                 // The sort order
         );
 
-        String testString = null;
+        String testString = "";
+        int totalTime = 0;
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
@@ -141,9 +142,11 @@ public class SqlUtility {
                                 "Subject : " + c.getString(4) + "\n" +
                                 "Start Time : " + c.getString(6) + "\n" +
                                 "End Time : " + c.getString(7) + "\n" +
-                                "Duration : " + duration + " Hours" + "\n\n";
+                                "Duration : " + duration + " Hours" + "\n================\n\n";
+                totalTime += duration;
             } while (c.moveToNext());
         }
+        testString += "\nTotal hours : " + totalTime + " hours";
         return  testString;
     }
 

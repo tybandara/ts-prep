@@ -3,11 +3,14 @@ package com.example.thilinab.tsprep;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -19,9 +22,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class TSPrep extends AppCompatActivity {
+public class TSPrep extends FragmentActivity{
+
     // This holds general details of a time record
-    DetailsPojo detailsPojo = new DetailsPojo();
+    Details details;
     // List of classes
     List<String> classList = new ArrayList<>();
     // List of subjects
@@ -34,52 +38,123 @@ public class TSPrep extends AppCompatActivity {
     static final String LECTURED_FROM_MINUTE = "lecturedFromMinute";
     static final String LECTURED_TO_HOUR = "lecturedToHour";
     static final String LECTURED_TO_MINUTE = "lecturedToMinute";
+    static final String LECTURED_CLASS = "lecturedClass";
+    static final String LECTURED_SUBJECT = "lecturedSubject";
+    static final String TIMESHEET_MONTH = "timesheetMonth";
+
+
+    ViewPager viewPager1, viewPager2;
+    SqlUtility sqlUtility ;
+
+    ImageView timeBtn;
+    ImageView exportBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tsprep);
+        //setContentView(R.layout.activity_tsprep);
+        //setContentView(R.layout.viewpager_layout);
+        setContentView(R.layout.start_layout);
+
+        details = Details.getInstance();
+
+        sqlUtility = new SqlUtility(this);
+        details.setSqlUtility(sqlUtility);
+
+        timeBtn = (ImageView) findViewById(R.id.time_btn);
+        timeBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    // image released
+                    timeBtn.setImageResource(R.drawable.time_down);
+                    return true;
+                }
+                if(event.getAction() == MotionEvent.ACTION_UP){
+                    // image released
+                    timeBtn.setImageResource(R.drawable.time_up);
+                    Intent intent = new Intent(getApplicationContext(), NewTimeEntering.class);
+                    startActivity(intent);
+
+                    return true;
+                }
+                return false;
+            }
+        });
+        exportBtn = (ImageView) findViewById(R.id.export_btn);
+        exportBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    // image released
+                    exportBtn.setImageResource(R.drawable.mail_down);
+                    return true;
+                }
+                if(event.getAction() == MotionEvent.ACTION_UP){
+                    // image released
+                    exportBtn.setImageResource(R.drawable.mail_up);
+                    Intent intent = new Intent(getApplicationContext(), FilterActivity.class);
+                    startActivity(intent);
+                    //Toast.makeText(getApplication(), "export button up", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         // Restoring values from the previously destroyed instance
         if (savedInstanceState != null) {
-            detailsPojo.setYear(savedInstanceState.getInt(LECTURED_YEAR));
-            detailsPojo.setMonth(savedInstanceState.getInt(LECTURED_MONTH));
-            detailsPojo.setDay(savedInstanceState.getInt(LECTURED_DATE));
-            detailsPojo.setFromHour(savedInstanceState.getInt(LECTURED_FROM_HOUR));
-            detailsPojo.setFromMinute(savedInstanceState.getInt(LECTURED_FROM_MINUTE));
-            detailsPojo.setToHour(savedInstanceState.getInt(LECTURED_TO_HOUR));
-            detailsPojo.setToMinute(savedInstanceState.getInt(LECTURED_TO_MINUTE));
+            details.setYear(savedInstanceState.getInt(LECTURED_YEAR));
+            details.setMonth(savedInstanceState.getInt(LECTURED_MONTH));
+            details.setDay(savedInstanceState.getInt(LECTURED_DATE));
+            details.setFromHour(savedInstanceState.getInt(LECTURED_FROM_HOUR));
+            details.setFromMinute(savedInstanceState.getInt(LECTURED_FROM_MINUTE));
+            details.setToHour(savedInstanceState.getInt(LECTURED_TO_HOUR));
+            details.setToMinute(savedInstanceState.getInt(LECTURED_TO_MINUTE));
+            details.setClassName(savedInstanceState.getString(LECTURED_CLASS));
+            details.setSubject(savedInstanceState.getString(LECTURED_SUBJECT));
+            details.setFilterMonth(savedInstanceState.getString(TIMESHEET_MONTH));
         }
         else{
             // This is a fresh start. Set the current date as the initial value
             final Calendar c = Calendar.getInstance();
-            detailsPojo.setYear(c.get(Calendar.YEAR));
-            detailsPojo.setMonth(c.get(Calendar.MONTH));
-            detailsPojo.setDay(c.get(Calendar.DAY_OF_MONTH));
-            detailsPojo.setFromHour(c.get(Calendar.HOUR_OF_DAY));
-            detailsPojo.setFromMinute(c.get(Calendar.MINUTE));
-            detailsPojo.setToHour(c.get(Calendar.HOUR_OF_DAY));
-            detailsPojo.setToMinute(c.get(Calendar.MINUTE));
+            details.setYear(c.get(Calendar.YEAR));
+            details.setMonth(c.get(Calendar.MONTH));
+            details.setDay(c.get(Calendar.DAY_OF_MONTH));
+            details.setFromHour(c.get(Calendar.HOUR_OF_DAY));
+            details.setFromMinute(c.get(Calendar.MINUTE));
+            details.setToHour(c.get(Calendar.HOUR_OF_DAY));
+            details.setToMinute(c.get(Calendar.MINUTE));
+            details.setClassName("B.Sc.");
+            details.setSubject("ISS");
+            details.setFilterMonth("Jan");
         }
 
         // Set class details
         fillClasses();
         // Set subject details
         fillSubjects();
-        // Configure the current view
-        SetView();
+
+//        viewPager1 = (ViewPager) findViewById(R.id.swipe_viewpager);
+//        viewPager2 = (ViewPager) findViewById(R.id.swipe_viewpager);
+//        SwipeAdapter swipeAadpter = new SwipeAdapter(getSupportFragmentManager());
+//        viewPager1.setAdapter(swipeAadpter);
+//        viewPager2.setAdapter(swipeAadpter);
+
+//
+
+//        // Configure the current view
+//        SetView();
     }
 
     // Fills the subject list
     private void fillSubjects() {
-        subjectList.add("Embedded Systems");
-        subjectList.add("Introduction to Smart Systems");
+        details.setClassName("B.Sc.");
     }
 
     // Fills the classes list
     private void fillClasses() {
-        classList.add("PGPN");
-        classList.add("DEGREE (B.Sc.)");
+        details.setSubject("ISS");
     }
 
     private void SetView() {
@@ -160,11 +235,11 @@ public class TSPrep extends AppCompatActivity {
 
         /* Add the current information to the sqlite db. Return value should be greater than 1
         if the call is succeeded */
-        long ret = sqlUtility.insertValues(detailsPojo.getYear(), detailsPojo.getMonth(), detailsPojo.getDay(),
+        long ret = sqlUtility.insertValues(details.getYear(), details.getMonth(), details.getDay(),
                 classSpinner.getSelectedItem().toString(),
                 subjectSpinner.getSelectedItem().toString(),
                 getFromTime("h:mm a"), getToTime("h:mm a")
-                );
+        );
 
         Context context = getApplicationContext();
         CharSequence text;
@@ -196,8 +271,8 @@ public class TSPrep extends AppCompatActivity {
         DialogFragment newFragment = new ToTimePicker(){
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                detailsPojo.setToHour(hourOfDay);
-                detailsPojo.setToMinute(minute);
+                details.setToHour(hourOfDay);
+                details.setToMinute(minute);
                 Button toButton = (Button) findViewById(R.id.Totime_Btn);
                 toButton.setText("To : " + getToTime("h:mm a"));
             }
@@ -212,8 +287,8 @@ public class TSPrep extends AppCompatActivity {
         DialogFragment newFragment = new FromTimePicker(){
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                detailsPojo.setFromHour(hourOfDay);
-                detailsPojo.setFromMinute(minute);
+                details.setFromHour(hourOfDay);
+                details.setFromMinute(minute);
                 Button fromButton = (Button) findViewById(R.id.From_Btn);
                 fromButton.setText("From : " + getFromTime("h:mm a"));
             }
@@ -228,9 +303,9 @@ public class TSPrep extends AppCompatActivity {
         DialogFragment newFragment = new DatePicker(){
             @Override
             public void onDateSet(android.widget.DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                detailsPojo.setYear(year);
-                detailsPojo.setMonth(monthOfYear);
-                detailsPojo.setDay(dayOfMonth);
+                details.setYear(year);
+                details.setMonth(monthOfYear);
+                details.setDay(dayOfMonth);
                 Button dateButton = (Button) findViewById(R.id.Date_Btn);
                 dateButton.setText("Date : " + getCurrentDate("yyyy-MMM-dd"));
             }
@@ -245,8 +320,8 @@ public class TSPrep extends AppCompatActivity {
      */
     private String getFromTime(String format) {
         final Calendar c = Calendar.getInstance();
-        c.set(detailsPojo.getYear(), detailsPojo.getMonth(), detailsPojo.getDay(),
-                detailsPojo.getFromHour(), detailsPojo.getFromMinute());
+        c.set(details.getYear(), details.getMonth(), details.getDay(),
+                details.getFromHour(), details.getFromMinute());
         SimpleDateFormat fromTime = new SimpleDateFormat(format);
         String retString = fromTime.format(c.getTime());
         return retString;
@@ -259,8 +334,8 @@ public class TSPrep extends AppCompatActivity {
      */
     private String getToTime(String format) {
         final Calendar c = Calendar.getInstance();
-        c.set(detailsPojo.getYear(), detailsPojo.getMonth(), detailsPojo.getDay(),
-                detailsPojo.getToHour(), detailsPojo.getToMinute());
+        c.set(details.getYear(), details.getMonth(), details.getDay(),
+                details.getToHour(), details.getToMinute());
         SimpleDateFormat fromTime = new SimpleDateFormat(format);
         String retString = fromTime.format(c.getTime());
         return retString;
@@ -273,7 +348,7 @@ public class TSPrep extends AppCompatActivity {
      */
     private String getCurrentDate(String format) {
         final Calendar c = Calendar.getInstance();
-        c.set(detailsPojo.getYear(), detailsPojo.getMonth(), detailsPojo.getDay());
+        c.set(details.getYear(), details.getMonth(), details.getDay());
         SimpleDateFormat date = new SimpleDateFormat(format);
         String retString = date.format(c.getTime());
         return retString;
@@ -286,13 +361,13 @@ public class TSPrep extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // Save the users current information
-        outState.putInt(LECTURED_YEAR, detailsPojo.getYear());
-        outState.putInt(LECTURED_MONTH, detailsPojo.getMonth());
-        outState.putInt(LECTURED_DATE, detailsPojo.getDay());
-        outState.putInt(LECTURED_FROM_HOUR, detailsPojo.getFromHour());
-        outState.putInt(LECTURED_FROM_MINUTE, detailsPojo.getFromMinute());
-        outState.putInt(LECTURED_TO_HOUR, detailsPojo.getToHour());
-        outState.putInt(LECTURED_TO_MINUTE, detailsPojo.getToMinute());
+        outState.putInt(LECTURED_YEAR, details.getYear());
+        outState.putInt(LECTURED_MONTH, details.getMonth());
+        outState.putInt(LECTURED_DATE, details.getDay());
+        outState.putInt(LECTURED_FROM_HOUR, details.getFromHour());
+        outState.putInt(LECTURED_FROM_MINUTE, details.getFromMinute());
+        outState.putInt(LECTURED_TO_HOUR, details.getToHour());
+        outState.putInt(LECTURED_TO_MINUTE, details.getToMinute());
 
         super.onSaveInstanceState(outState);
     }
