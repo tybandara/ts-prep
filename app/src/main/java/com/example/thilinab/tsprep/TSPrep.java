@@ -52,8 +52,6 @@ public class TSPrep extends FragmentActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_tsprep);
-        //setContentView(R.layout.viewpager_layout);
         setContentView(R.layout.start_layout);
 
         details = Details.getInstance();
