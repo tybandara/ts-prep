@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -48,6 +49,8 @@ public class TSPrep extends FragmentActivity{
 
     ImageView timeBtn;
     ImageView exportBtn;
+
+    TextView configureBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +100,14 @@ public class TSPrep extends FragmentActivity{
                     return true;
                 }
                 return false;
+            }
+        });
+
+        configureBtn = (TextView) findViewById(R.id.configure_btn);
+        configureBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                configureClicked();
             }
         });
 
@@ -153,6 +164,16 @@ public class TSPrep extends FragmentActivity{
     // Fills the classes list
     private void fillClasses() {
         details.setSubject("ISS");
+    }
+
+    private void configureClicked(){
+        int duration = Toast.LENGTH_SHORT;
+        Context context = getApplicationContext();
+        Toast toast = Toast.makeText(context, "Test", duration);
+        toast.show();
+
+        Intent intent = new Intent(getApplicationContext(), ConfigureActivity.class);
+        startActivity(intent);
     }
 
     private void SetView() {

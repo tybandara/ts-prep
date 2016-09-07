@@ -17,7 +17,8 @@
         </activity>
         <activity android:name=".ExportActivity" />
         <activity android:name=".NewTimeEntering" />
-        <activity android:name=".FilterActivity"></activity>
+        <activity android:name=".FilterActivity" />
+        <activity android:name=".ConfigureActivity"></activity>
     </application>
 
 </manifest>
