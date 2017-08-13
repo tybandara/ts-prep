@@ -20,15 +20,15 @@ import com.example.thilinab.tsprep.sqldb.SqlUtility;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-public class TSPrep extends FragmentActivity{
+public class TSPrep extends FragmentActivity {
 
     // This holds general details of a time record
     Details details;
-    // List of classes
-    List<String> classList = new ArrayList<>();
+
     // List of subjects
     List<String> subjectList = new ArrayList<>();
 
@@ -45,12 +45,13 @@ public class TSPrep extends FragmentActivity{
 
 
     ViewPager viewPager1, viewPager2;
-    SqlUtility sqlUtility ;
+    SqlUtility sqlUtility;
 
     ImageView timeBtn;
     ImageView exportBtn;
 
     TextView configureBtn;
+    private ArrayList<String> classList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,18 +61,30 @@ public class TSPrep extends FragmentActivity{
         details = Details.getInstance();
 
         sqlUtility = new SqlUtility(this);
+
+
+        String classes = sqlUtility.getConfigClasses();
+        if (classes != null && !classes.isEmpty()) {
+            classList = new ArrayList<String>(Arrays.asList(classes.split(",")));
+        } else {
+            sqlUtility.insertClasses("PGPN,B.Sc.");
+            classList = new ArrayList<>();
+            classList.add(0, "PGPN");
+            classList.add(1, "B.Sc.");
+        }
+
         details.setSqlUtility(sqlUtility);
 
         timeBtn = (ImageView) findViewById(R.id.time_btn);
         timeBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     // image released
                     timeBtn.setImageResource(R.drawable.time_down);
                     return true;
                 }
-                if(event.getAction() == MotionEvent.ACTION_UP){
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     // image released
                     timeBtn.setImageResource(R.drawable.time_up);
                     Intent intent = new Intent(getApplicationContext(), NewTimeEntering.class);
@@ -86,12 +99,12 @@ public class TSPrep extends FragmentActivity{
         exportBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     // image released
                     exportBtn.setImageResource(R.drawable.mail_down);
                     return true;
                 }
-                if(event.getAction() == MotionEvent.ACTION_UP){
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     // image released
                     exportBtn.setImageResource(R.drawable.mail_up);
                     Intent intent = new Intent(getApplicationContext(), FilterActivity.class);
@@ -104,7 +117,7 @@ public class TSPrep extends FragmentActivity{
         });
 
         configureBtn = (TextView) findViewById(R.id.configure_btn);
-        configureBtn.setOnClickListener(new View.OnClickListener(){
+        configureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 configureClicked();
@@ -123,8 +136,7 @@ public class TSPrep extends FragmentActivity{
             details.setClassName(savedInstanceState.getString(LECTURED_CLASS));
             details.setSubject(savedInstanceState.getString(LECTURED_SUBJECT));
             details.setFilterMonth(savedInstanceState.getString(TIMESHEET_MONTH));
-        }
-        else{
+        } else {
             // This is a fresh start. Set the current date as the initial value
             final Calendar c = Calendar.getInstance();
             details.setYear(c.get(Calendar.YEAR));
@@ -134,15 +146,16 @@ public class TSPrep extends FragmentActivity{
             details.setFromMinute(c.get(Calendar.MINUTE));
             details.setToHour(c.get(Calendar.HOUR_OF_DAY));
             details.setToMinute(c.get(Calendar.MINUTE));
-            details.setClassName("B.Sc.");
+
+            details.setClassName(classList.get(0));
             details.setSubject("ISS");
             details.setFilterMonth("Jan");
         }
 
         // Set class details
-        fillClasses();
+        //fillClasses();
         // Set subject details
-        fillSubjects();
+        //fillSubjects();
 
 //        viewPager1 = (ViewPager) findViewById(R.id.swipe_viewpager);
 //        viewPager2 = (ViewPager) findViewById(R.id.swipe_viewpager);
@@ -166,7 +179,7 @@ public class TSPrep extends FragmentActivity{
         details.setSubject("ISS");
     }
 
-    private void configureClicked(){
+    private void configureClicked() {
         int duration = Toast.LENGTH_SHORT;
         Context context = getApplicationContext();
         Toast toast = Toast.makeText(context, "Test", duration);
@@ -176,79 +189,12 @@ public class TSPrep extends FragmentActivity{
         startActivity(intent);
     }
 
-    private void SetView() {
-        // Save current record button
-        Button saveButton = (Button) findViewById(R.id.Save_Btn);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleSaveBtn();
-            }
-        });
-
-        // Export the records button
-        Button exportButton = (Button) findViewById(R.id.Export_Btn);
-        exportButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleExportButton();
-            }
-        });
-
-        // Button for selecting the date of the class
-        Button dateButton = (Button) findViewById(R.id.Date_Btn);
-        dateButton.setText("Date : " + getCurrentDate("yyyy-MMM-dd"));
-        dateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleClassDateBtn();
-            }
-        });
-
-        // Button for selecting the class start time
-        Button fromTimeButton = (Button) findViewById(R.id.From_Btn);
-        fromTimeButton.setText("From : " + getFromTime("h:mm a"));
-        fromTimeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showFromTimeSelectionDialog();
-            }
-        });
-
-        // Button for selecting the class end time
-        Button toTimeButton = (Button) findViewById(R.id.Totime_Btn);
-        toTimeButton.setText("To : " + getToTime("h:mm a"));
-        toTimeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showToTimeSelectionDialog();            }
-        });
-
-        // Populate class spinner
-        Spinner classSpinner = (Spinner) findViewById(R.id.Class_Spinner);
-        // Application of the Array to the Spinner
-        ArrayAdapter<String> classSpinnerArrayAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, classList);
-        // The drop down view
-        classSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        classSpinner.setAdapter(classSpinnerArrayAdapter);
-
-        // Populate subject spinner
-        Spinner subjectSpinner = (Spinner) findViewById(R.id.Subject_Spinner);
-        // Adding the array of string
-        ArrayAdapter<String> subjectSpinnerArrayAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, subjectList);
-        // Add the dropdown view
-        subjectSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        subjectSpinner.setAdapter(subjectSpinnerArrayAdapter);
-    }
-
     /**
      * Currently entered data would be entered in the sqlite database
      */
     private void handleSaveBtn() {
-        Spinner classSpinner=(Spinner) findViewById(R.id.Class_Spinner);
-        Spinner subjectSpinner=(Spinner) findViewById(R.id.Subject_Spinner);
+        Spinner classSpinner = (Spinner) findViewById(R.id.Class_Spinner);
+        Spinner subjectSpinner = (Spinner) findViewById(R.id.Subject_Spinner);
 
         SqlUtility sqlUtility = new SqlUtility(this);
 
@@ -263,7 +209,7 @@ public class TSPrep extends FragmentActivity{
         Context context = getApplicationContext();
         CharSequence text;
 
-        if(ret > 0 )
+        if (ret > 0)
             text = "Added information successfully";
         else
             text = "Something wrong!!!";
@@ -287,7 +233,7 @@ public class TSPrep extends FragmentActivity{
      * Handle class end time selection using a dialog
      */
     private void showToTimeSelectionDialog() {
-        DialogFragment newFragment = new ToTimePicker(){
+        DialogFragment newFragment = new ToTimePicker() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 details.setToHour(hourOfDay);
@@ -303,7 +249,7 @@ public class TSPrep extends FragmentActivity{
      * Handle class start time selection using a dialog
      */
     private void showFromTimeSelectionDialog() {
-        DialogFragment newFragment = new FromTimePicker(){
+        DialogFragment newFragment = new FromTimePicker() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 details.setFromHour(hourOfDay);
@@ -319,7 +265,7 @@ public class TSPrep extends FragmentActivity{
      * Handle class date selection using a dialog
      */
     private void handleClassDateBtn() {
-        DialogFragment newFragment = new DatePicker(){
+        DialogFragment newFragment = new DatePicker() {
             @Override
             public void onDateSet(android.widget.DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 details.setYear(year);
@@ -334,6 +280,7 @@ public class TSPrep extends FragmentActivity{
 
     /**
      * Simple function to get the class start time as a string
+     *
      * @param format expected string format
      * @return string class start time
      */
@@ -348,6 +295,7 @@ public class TSPrep extends FragmentActivity{
 
     /**
      * function to get the class stop time as a string
+     *
      * @param format expected string format
      * @return string class end time
      */
@@ -362,6 +310,7 @@ public class TSPrep extends FragmentActivity{
 
     /**
      * function to get the class date as a string
+     *
      * @param format expected string format
      * @return string class date
      */
@@ -375,6 +324,7 @@ public class TSPrep extends FragmentActivity{
 
     /**
      * handling the state when the app is being paused
+     *
      * @param outState
      */
     @Override

@@ -15,4 +15,6 @@ public abstract class FeedEntry implements BaseColumns {
     public static final String COLUMN_NAME_CLASS = "Class";
     public static final String COLUMN_NAME_FROMTIME = "FromTime";
     public static final String COLUMN_NAME_TOTIME = "ToTime";
+    public static final String COLUMN_NAME_CONFIGS_CLASSES = "ConfigClasses";
+    public static final String COLUMN_NAME_CONFIGS_SUBJECTS = "ConfigSubjects";
 }

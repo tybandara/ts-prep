@@ -28,7 +28,7 @@
         android:layout_height="0dp"
         android:textColor="#ffffff"
         android:id="@+id/configure_class"
-        android:layout_weight="8"
+        android:layout_weight="6"
         android:layout_gravity="center_horizontal" />
     <TextView
         android:layout_width="fill_parent"
@@ -48,11 +48,11 @@
         android:layout_height="0dp"
         android:textColor="#ffffff"
         android:id="@+id/configure_subjects"
-        android:layout_weight="8"
+        android:layout_weight="6"
         android:layout_gravity="center_horizontal" />
 
     <TextView
-        android:id="@+id/mail_btn"
+        android:id="@+id/save_configs_btn"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:text="Save"
@@ -72,7 +72,7 @@
         android:layout_height="0dp"
         android:text="New Text"
         android:id="@+id/textView4"
-        android:layout_weight="2"
+        android:layout_weight="4"
         android:visibility="invisible" />
 
 </LinearLayout>

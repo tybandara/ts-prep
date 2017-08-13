@@ -14,6 +14,11 @@ import android.widget.TimePicker;
 
 import com.example.thilinab.tsprep.Details;
 import com.example.thilinab.tsprep.R;
+import com.example.thilinab.tsprep.sqldb.SqlUtility;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -22,6 +27,7 @@ import com.example.thilinab.tsprep.R;
 public class ClassNameFrag extends android.support.v4.app.Fragment {
     TextView class_name_tv;
     Details details = Details.getInstance();
+    String[] classNames;
 
     public ClassNameFrag() {
         // Required empty public constructor
@@ -41,6 +47,10 @@ public class ClassNameFrag extends android.support.v4.app.Fragment {
             }
         });
 
+        SqlUtility sqlUtility = details.getSqlUtility();
+        String classes = sqlUtility.getConfigClasses();
+        List<String> list = new ArrayList<String>(Arrays.asList(classes.split(",")));
+        classNames = list.toArray(new String[list.size()]);
         return view;
     }
 
@@ -53,27 +63,21 @@ public class ClassNameFrag extends android.support.v4.app.Fragment {
     }
 
     private void handleClassName() {
-        AlertDialog.OnClickListener mClickListener = new AlertDialog.OnClickListener(){
+
+        AlertDialog.OnClickListener mClickListener = new AlertDialog.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        details.setClassName("B.Sc.");
-                        class_name_tv.setText("B.Sc.");
-                        break;
-                    case 1:
-                        details.setClassName("PGPN");
-                        class_name_tv.setText("PGPN");
-                        break;
-                }
+                details.setClassName(classNames[which]);
+                class_name_tv.setText(classNames[which]);
             }
         };
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
         builder.setTitle("Select Class")
-                .setItems(new String[] {"B.Sc.","PGPN"}, mClickListener);
+                .setItems(classNames, mClickListener);
         builder.show();
     }
 

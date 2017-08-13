@@ -10,7 +10,6 @@
         android:id="@+id/class_name_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="B.Sc."
         android:background="#009688"
         android:textColor="#ffffff"
         android:textSize="50dp"
