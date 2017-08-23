@@ -29,9 +29,6 @@ public class TSPrep extends FragmentActivity {
     // This holds general details of a time record
     Details details;
 
-    // List of subjects
-    List<String> subjectList = new ArrayList<>();
-
     static final String LECTURED_YEAR = "lecturedYear";
     static final String LECTURED_MONTH = "lecturedMonth";
     static final String LECTURED_DATE = "lecturedDate";
@@ -52,6 +49,7 @@ public class TSPrep extends FragmentActivity {
 
     TextView configureBtn;
     private ArrayList<String> classList;
+    private ArrayList<String> subjectList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +69,16 @@ public class TSPrep extends FragmentActivity {
             classList = new ArrayList<>();
             classList.add(0, "PGPN");
             classList.add(1, "B.Sc.");
+        }
+
+        String subjects = sqlUtility.getConfigSubjects();
+        if(subjects!=null && !subjects.isEmpty()){
+            subjectList=new ArrayList<String>(Arrays.asList(subjects.split(",")));
+        }else{
+            sqlUtility.insertSubjects("ISS,ES");
+            subjectList=new ArrayList<>();
+            subjectList.add(0,"ISS");
+            subjectList.add(1,"ES");
         }
 
         details.setSqlUtility(sqlUtility);
@@ -148,7 +156,7 @@ public class TSPrep extends FragmentActivity {
             details.setToMinute(c.get(Calendar.MINUTE));
 
             details.setClassName(classList.get(0));
-            details.setSubject("ISS");
+            details.setSubject(subjectList.get(0));
             details.setFilterMonth("Jan");
         }
 

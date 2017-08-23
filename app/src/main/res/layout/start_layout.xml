@@ -43,6 +43,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:onClick="configureClicked"
-        android:text="Configure" />
+        android:text="Configure"
+        android:textColor="@android:color/white"/>
 
 </LinearLayout>

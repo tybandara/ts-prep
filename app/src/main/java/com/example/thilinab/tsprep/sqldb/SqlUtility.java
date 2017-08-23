@@ -227,6 +227,11 @@ public class SqlUtility {
         if (c.getCount() > 0) {
             c.moveToFirst();
             retString = c.getString(0);
+
+            while(retString==null) {
+                c.moveToNext();
+                retString = c.getString(0);
+            }
         }
         return retString;
     }
